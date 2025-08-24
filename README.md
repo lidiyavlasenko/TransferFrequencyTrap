@@ -90,7 +90,7 @@ min_number_of_operators = 1
 max_number_of_operators = 2
 block_sample_size = 10
 private_trap = true
-whitelist = ["0x5dE1b3767540357B38e006C7a00eba66438F6890"]
+whitelist = ["0x5dE1b3767*******06C7a00eba66438F6890"]
 address = "0x9A80B5237de6E1d120762c7a6aEA12fB197365bA"
 ```
 
@@ -115,7 +115,7 @@ forge create \
 Output:
 
 ```
-Deployer: 0x5dE1b3767540357B38e006C7a00eba66438F6890
+Deployer: 0x5dE1b376754*******e006C7a00eba66438F6890
 Deployed to: 0x1e71923035a2cA2812Ab96Ac3BCb44Ce55669781
 Transaction hash: 0xcd2304104b8fce9338df7550fa36be6a731ec5dfacd9f7d473330fdbf5caf4e5
 ```
