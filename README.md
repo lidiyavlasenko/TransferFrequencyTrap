@@ -12,6 +12,26 @@ If the balance has decreased by at least dropThreshold (in the code, this is the
 
 ---
 
+## Triggering
+
+In case of a drop:
+
+Returns true,
+
+Encodes parameters:
+
+wallet address (target),
+
+previous balance,
+
+current balance,
+
+drop size,
+
+message "Balance dropped"
+
+---
+
 ## 📁 Files
 
 ### `src/TransferFrequencyTrap.sol`
