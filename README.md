@@ -20,36 +20,55 @@ This trap observes a target Ethereum wallet. If the balance falls by **0.03 ETH 
 pragma solidity ^0.8.20;
 
 interface ITrap {
-    function collect() external returns (bytes memory);
+    function collect() external view returns (bytes memory);
     function shouldRespond(bytes[] calldata data) external view returns (bool, bytes memory);
 }
 
 contract TransferFrequencyTrap is ITrap {
-    /// Адрес кошелька, за которым следим
-    address public constant target = 0x5dE1b376***********006C7a00eba66438F6890;
+    /// The wallet address we are tracking (test)
+    address public constant target = 0x5dE1b3767000000000006C7a00eba66438F6890;
 
-    /// Порог падения в wei (0.03 ETH)
-    uint256 public constant dropThreshold = 0.03 ether;
+    /// Drop threshold in wei
+    uint256 public immutable dropThreshold = 1; // 1 wei
 
-    /// Сбор данных: возвращает текущий баланс
+    /// Data collection: returns the current balance
     function collect() external view override returns (bytes memory) {
         return abi.encode(target.balance);
     }
 
-    /// Проверка: если баланс упал на 0.03 ETH или больше — срабатываем
+    /// Check: if the balance drops below threshold or more, we trigger
     function shouldRespond(bytes[] calldata data) external pure override returns (bool, bytes memory) {
-        if (data.length < 2) return (false, "Insufficient data");
+        if (data.length < 2) {
+            return (false, abi.encode("Insufficient data"));
+        }
 
         uint256 current = abi.decode(data[0], (uint256));
         uint256 previous = abi.decode(data[1], (uint256));
 
-        if (previous > current && (previous - current) >= dropThreshold) {
-            return (true, abi.encode("Balance dropped by at least 0.03 ETH"));
+        if (previous == 0) {
+            return (false, abi.encode("Previous balance is zero"));
         }
 
-        return (false, "");
+        if (previous > current && (previous - current) >= dropThreshold) {
+            uint256 drop = previous - current;
+
+            // Returning arguments for logTransferAlert(address,uint256,uint256,uint256,string)
+            return (
+                true,
+                abi.encode(
+                    target,        // address
+                    previous,      // uint256
+                    current,       // uint256
+                    drop,          // uint256
+                    "Balance dropped" // string
+                )
+            );
+        }
+
+        return (false, abi.encode("No significant drop"));
     }
-}
+} 
+
 ```
 
 ---
@@ -61,10 +80,22 @@ contract TransferFrequencyTrap is ITrap {
 pragma solidity ^0.8.20;
 
 contract LogAlertReceiver {
-    event Alert(string message);
+    event Alert(
+        address indexed target,
+        uint256 prevBalance,
+        uint256 currBalance,
+        uint256 drop,
+        string message
+    );
 
-    function logTransferAlert(string calldata message) external {
-        emit Alert(message);
+    function logTransferAlert(
+        address target,
+        uint256 prevBalance,
+        uint256 currBalance,
+        uint256 drop,
+        string calldata message
+    ) external {
+        emit Alert(target, prevBalance, currBalance, drop, message);
     }
 }
 ```
@@ -77,13 +108,13 @@ contract LogAlertReceiver {
 ethereum_rpc = "https://rpc.ankr.com/eth_hoodi/7d76ec4753f686fd*****************fee849faf82277de80688a850951a6"
 drosera_rpc = "https://relay.hoodi.drosera.io"
 eth_chain_id = 560048
-drosera_address = "0x91cB447BaFc6e0EA0F4Fe056F5a9b1F14bb06e5D"
+drosera_address = "0x91cB447BaF********e056F5a9b1F14bb06e5D"
 
 [traps]
 
 [traps.mytrap]
 path = "out/TransferFrequencyTrap.sol/TransferFrequencyTrap.json"
-response_contract = "0x1e71923035a2cA2812Ab96Ac3BCb44Ce55669781"
+response_contract = "0x1e71923035********6Ac3BCb44Ce55669781"
 response_function = "logTransferAlert(string)"
 cooldown_period_blocks = 33
 min_number_of_operators = 1
@@ -91,7 +122,7 @@ max_number_of_operators = 2
 block_sample_size = 10
 private_trap = true
 whitelist = ["0x5dE1b3767*******06C7a00eba66438F6890"]
-address = "0x9A80B5237de6E1d120762c7a6aEA12fB197365bA"
+address = "0x9A80B5237de*********2c7a6aEA12fB197365bA"
 ```
 
 ---
@@ -116,8 +147,8 @@ Output:
 
 ```
 Deployer: 0x5dE1b376754*******e006C7a00eba66438F6890
-Deployed to: 0x1e71923035a2cA2812Ab96Ac3BCb44Ce55669781
-Transaction hash: 0xcd2304104b8fce9338df7550fa36be6a731ec5dfacd9f7d473330fdbf5caf4e5
+Deployed to: 0x1e7192303**********2Ab96Ac3BCb44Ce55669781
+Transaction hash: 0xcd2304104b8fce9338***********31ec5dfacd9f7d473330fdbf5caf4e5
 ```
 
 ---
