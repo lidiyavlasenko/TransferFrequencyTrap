@@ -12,7 +12,7 @@ If the balance has decreased by at least dropThreshold (in the code, this is the
 
 ---
 
-## Triggering
+## 😡 Triggering
 
 In case of a drop:
 
