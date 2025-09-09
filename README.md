@@ -202,9 +202,9 @@ INFO drosera_services::operator::submission::runner: Estimated gas: 743956
 
 | Component             | Address |
 |----------------------|---------|
-| Trap contract         | `0x9A80B5237de6E1d120762c7a6aEA12fB197365bA` |
-| LogAlertReceiver      | `0x1e71923035a2cA2812Ab96Ac3BCb44Ce55669781` |
-| Trap operator wallet  | `0x5dE1b3767540357B38e006C7a00eba66438F6890` |
+| Trap contract         | `0x9A80B5237**********62c7a6aEA12fB197365bA` |
+| LogAlertReceiver      | `0x1e7192303**********b96Ac3BCb44Ce55669781` |
+| Trap operator wallet  | `0x5dE1b3767**********006C7a00eba66438F6890` |
 
 ---
 
