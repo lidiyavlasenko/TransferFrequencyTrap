@@ -1,13 +1,14 @@
 # TransferFrequencyTrap
 # TransferFrequencyTrap — Drosera Smart Trap
 
-This repository contains a working Drosera-compatible trap called `TransferFrequencyTrap`, which monitors the balance of a specific wallet and triggers an alert when a drop of **at least 0.03 ETH** is detected. It also includes the deployed alert receiver contract.
+The trap captures any decrease in the balance of the observed wallet and provides details about how much and when the decrease occurred.
 
 ---
 
 ## 🔍 What This Trap Does
 
-This trap observes a target Ethereum wallet. If the balance falls by **0.03 ETH or more** between two collected samples, `shouldRespond` returns `true`, and an alert is emitted through the configured `LogAlertReceiver`.
+Determining a balance drop
+If the balance has decreased by at least dropThreshold (in the code, this is the minimum value of 1 wei), the trap considers this a significant event.
 
 ---
 
